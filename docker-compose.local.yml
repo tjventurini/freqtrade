@@ -9,25 +9,16 @@ networks:
 
 services:
   freqtrade:
-    # image: freqtradeorg/freqtrade:stable
-    # image: freqtradeorg/freqtrade:develop
-    # Use plotting image
+    # Use plotting image for main instance on local machines
     image: freqtradeorg/freqtrade:develop_plot
-    # Build step - only needed when additional dependencies are needed
-    # build:
-    #   context: .
-    #   dockerfile: "./docker/Dockerfile.custom"
     restart: unless-stopped
     container_name: freqtrade
     volumes:
       - "./user_data:/freqtrade/user_data"
+      # Make sure we have the same timezone as the host machine
       - "/etc/timezone:/etc/timezone"
       - "/etc/localtime:/etc/localtime"
-    # Expose api on port 8080 (localhost only)
-    # Please read the https://www.freqtrade.io/en/stable/rest-api/ documentation
-    # before enabling this.
-    # ports:
-    #   - "127.0.0.1:8080:8080"
+    # Expose api on port 8080
     expose:
       - 8080
     # Default command used when running `docker compose up`
@@ -38,8 +29,8 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=reverse-proxy"
       # http
-      - "traefik.http.routers.freqtrade.rule=Host(`freqtrade.localhost`)"
-      - "traefik.http.routers.freqtrade.entrypoints=web"
+      - "traefik.http.routers.freqtrade.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.freqtrade.entrypoints=${ENTRYPOINT}"
     # add the network to the service configuration
     networks:
       - frontend
@@ -62,8 +53,8 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=reverse-proxy"
       # http
-      - "traefik.http.routers.btc-ema-strategy.rule=Host(`btc-ema-strategy.localhost`)"
-      - "traefik.http.routers.btc-ema-strategy.entrypoints=web"
+      - "traefik.http.routers.btc-ema-strategy.rule=Host(`btc-ema-strategy.${DOMAIN}`)"
+      - "traefik.http.routers.btc-ema-strategy.entrypoints=${ENTRYPOINT}"
     # add the network to the service configuration
     networks:
       - frontend
@@ -86,8 +77,8 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=reverse-proxy"
       # http
-      - "traefik.http.routers.btc-ema-strategy-optimized.rule=Host(`btc-ema-strategy-optimized.localhost`)"
-      - "traefik.http.routers.btc-ema-strategy-optimized.entrypoints=web"
+      - "traefik.http.routers.btc-ema-strategy-optimized.rule=Host(`btc-ema-strategy-optimized.${DOMAIN}`)"
+      - "traefik.http.routers.btc-ema-strategy-optimized.entrypoints=${ENTRYPOINT}"
     # add the network to the service configuration
     networks:
       - frontend
