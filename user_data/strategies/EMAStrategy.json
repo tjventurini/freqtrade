@@ -1,0 +1,31 @@
+{
+  "strategy_name": "EMAStrategy",
+  "params": {
+    "roi": {
+      "0": 0.919,
+      "8012": 0.202,
+      "17065": 0.109,
+      "23666": 0
+    },
+    "stoploss": {
+      "stoploss": -0.298
+    },
+    "trailing": {
+      "trailing_stop": false,
+      "trailing_stop_positive": null,
+      "trailing_stop_positive_offset": 0.0,
+      "trailing_only_offset_is_reached": false
+    },
+    "buy": {
+      "buy_ema_fast_length": 7,
+      "buy_ema_slow_length": 57
+    },
+    "sell": {
+      "sell_ema_fast_length": 30,
+      "sell_ema_slow_length": 32
+    },
+    "protection": {}
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2022-08-22 15:19:32.311294+00:00"
+}

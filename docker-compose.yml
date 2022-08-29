@@ -1,0 +1,93 @@
+---
+version: '3'
+
+# setup the network
+networks:
+  frontend:
+    external:
+      name: reverse-proxy
+
+services:
+  freqtrade:
+    # image: freqtradeorg/freqtrade:stable
+    # image: freqtradeorg/freqtrade:develop
+    # Use plotting image
+    image: freqtradeorg/freqtrade:develop_plot
+    # Build step - only needed when additional dependencies are needed
+    # build:
+    #   context: .
+    #   dockerfile: "./docker/Dockerfile.custom"
+    restart: unless-stopped
+    container_name: freqtrade
+    volumes:
+      - "./user_data:/freqtrade/user_data"
+      - "/etc/timezone:/etc/timezone"
+      - "/etc/localtime:/etc/localtime"
+    # Expose api on port 8080 (localhost only)
+    # Please read the https://www.freqtrade.io/en/stable/rest-api/ documentation
+    # before enabling this.
+    # ports:
+    #   - "127.0.0.1:8080:8080"
+    expose:
+      - 8080
+    # Default command used when running `docker compose up`
+    command: >
+      trade --logfile /freqtrade/user_data/logs/freqtrade.log --db-url sqlite:////freqtrade/user_data/databases/freqtrade.sqlite --config /freqtrade/user_data/config/freqtrade.json --strategy EMAStrategy
+    # add the labels to the service configuration
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=reverse-proxy"
+      # http
+      - "traefik.http.routers.freqtrade.rule=Host(`freqtrade.localhost`)"
+      - "traefik.http.routers.freqtrade.entrypoints=web"
+    # add the network to the service configuration
+    networks:
+      - frontend
+
+  btc-ema-strategy:
+    image: freqtradeorg/freqtrade:stable
+    restart: unless-stopped
+    container_name: btc-ema-strategy
+    volumes:
+      - "./user_data:/freqtrade/user_data"
+      - "/etc/timezone:/etc/timezone"
+      - "/etc/localtime:/etc/localtime"
+    expose:
+      - 8080
+    # Default command used when running `docker compose up`
+    command: >
+      trade --logfile /freqtrade/user_data/logs/btc-ema-strategy.log --db-url sqlite:////freqtrade/user_data/databases/btc-ema-strategy.sqlite --config /freqtrade/user_data/config/btc-ema-strategy.json --strategy BTCEMAStrategy
+    # add the labels to the service configuration
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=reverse-proxy"
+      # http
+      - "traefik.http.routers.btc-ema-strategy.rule=Host(`btc-ema-strategy.localhost`)"
+      - "traefik.http.routers.btc-ema-strategy.entrypoints=web"
+    # add the network to the service configuration
+    networks:
+      - frontend
+
+  btc-ema-strategy-optimized:
+    image: freqtradeorg/freqtrade:stable
+    restart: unless-stopped
+    container_name: btc-ema-strategy-optimized
+    volumes:
+      - "./user_data:/freqtrade/user_data"
+      - "/etc/timezone:/etc/timezone"
+      - "/etc/localtime:/etc/localtime"
+    expose:
+      - 8080
+    # Default command used when running `docker compose up`
+    command: >
+      trade --logfile /freqtrade/user_data/logs/btc-ema-strategy-optimized.log --db-url sqlite:////freqtrade/user_data/databases/btc-ema-strategy-optimized.sqlite --config /freqtrade/user_data/config/btc-ema-strategy-optimized.json --strategy BTCEMAStrategyOptimized
+    # add the labels to the service configuration
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=reverse-proxy"
+      # http
+      - "traefik.http.routers.btc-ema-strategy-optimized.rule=Host(`btc-ema-strategy-optimized.localhost`)"
+      - "traefik.http.routers.btc-ema-strategy-optimized.entrypoints=web"
+    # add the network to the service configuration
+    networks:
+      - frontend
