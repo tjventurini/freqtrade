@@ -64,7 +64,7 @@ fi
 # Print some info
 echo -e "${SUCCESS}Done! 🚀${NC}"
 echo -e "${WARN}Please update your '.env' file now 🧐${NC}"
-echo -e "${WARN}Afterwards you can execute 'make start' to start the service.${NC}"
+echo -e "${WARN}Afterwards you can setup your strategy and execute 'make start' to start the service.${NC}"
 
 # Exit sucessfully.
 exit 0
