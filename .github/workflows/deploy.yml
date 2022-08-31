@@ -5,12 +5,9 @@ on:
   push:
     branches:
       - main
-  # also run every day at midnight
-  schedule:
-    - cron: '23 01 * * 5'
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
