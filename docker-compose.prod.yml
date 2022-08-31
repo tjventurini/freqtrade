@@ -27,9 +27,13 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=reverse-proxy"
-      # http
+      # https
       - "traefik.http.routers.freqtrade.rule=Host(`${DOMAIN}`)"
       - "traefik.http.routers.freqtrade.entrypoints=${ENTRYPOINT}"
+      - "traefik.http.routers.freqtrade.tls=true"
+      - "traefik.http.routers.freqtrade.tls.certresolver=letsencrypt"
+      # middlewares
+      - "traefik.http.routers.freqtrade.middlewares=redirect-to-non-www@file"
     # add the network to the service configuration
     networks:
       - frontend
