@@ -1,10 +1,10 @@
 name: deploy
 
 on:
-  # run when master is pushed
+  # run when main is pushed
   push:
     branches:
-      - master
+      - main
   # also run every day at midnight
   schedule:
     - cron: '23 01 * * 5'
@@ -19,7 +19,7 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          known_hosts: 'just-a-placeholder-so-we-dont-get-errors-foo'
+          known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
       - name: Setup Known Hosts file
         run: ssh-keyscan -H ${{ secrets.SSH_HOST_IP }} >> ~/.ssh/known_hosts
       - name: Deploy with rsync
