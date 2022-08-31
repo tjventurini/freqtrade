@@ -4,4 +4,4 @@
 source ./scripts/load_colors.sh
 
 # Bring the containers down.
-docker-compose down --remove-orphans && docker-compose up -d && echo -e "${SUCCESS}It's dead now! 💀${NC}"
+docker-compose down --remove-orphans && docker-compose up -d && echo -e "${SUCCESS}It was dead 💀 But it came back to live! 🧟${NC}"
