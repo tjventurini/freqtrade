@@ -18,7 +18,7 @@ make init
 docker-compose pull
 
 # Create a new config file
-docker-compose run --rm freqtreade new-config --config ./user_data/config/freqtrade.json
+docker-compose run --rm freqtrade new-config --config ./user_data/config/freqtrade.json
 
 # Start the containers
 make up
