@@ -22,4 +22,4 @@ jobs:
       - name: Deploy with rsync
         run: rsync -avzh ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_IP }}:/home/thomas/freqtrade/
       - name: Restart container
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_IP }} '(cd freqtrade && docker-compose up -d)'
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_IP }} '(cd freqtrade && docker-compose down && docker-compose up -d)'
