@@ -22,7 +22,7 @@ services:
       - 8080
     # Default command used when running `docker compose up`
     command: >
-      trade --logfile /freqtrade/user_data/logs/freqtrade.log --db-url sqlite:////freqtrade/user_data/databases/freqtrade.sqlite --config /freqtrade/user_data/config/freqtrade.json --strategy EMAStrategy
+      trade --logfile /freqtrade/user_data/logs/btc-ema-strategy.log --db-url sqlite:////freqtrade/user_data/databases/btc-ema-strategy.sqlite --config /freqtrade/user_data/config/btc-ema-strategy.json --strategy BTCEMAStrategy
     # add the labels to the service configuration
     labels:
       - "traefik.enable=true"
