@@ -8,8 +8,8 @@ from pandas import DataFrame  # noqa
 from datetime import datetime  # noqa
 from typing import Optional, Union  # noqa
 
-from freqtrade.strategy import (BooleanParameter, CategoricalParameter, DecimalParameter,
-                                IStrategy, IntParameter, stoploss_from_absolute)
+from freqtrade.persistence import Trade
+from freqtrade.strategy import (BooleanParameter, CategoricalParameter, DecimalParameter, IStrategy, IntParameter, stoploss_from_absolute)
 
 # --------------------------------
 # Add your lib to import here
@@ -53,11 +53,11 @@ class BTCEMAStrategy(IStrategy):
 
     # Optimal stoploss designed for the strategy.
     # This attribute will be overridden if the config file contains "stoploss".
-    stoploss = -0.1
+    stoploss = -1
     use_custom_stoploss=True
 
     # Trailing stoploss
-    trailing_stop = False
+    # trailing_stop = False
     # trailing_only_offset_is_reached = False
     # trailing_stop_positive = 0.01
     # trailing_stop_positive_offset = 0.0  # Disabled / not configured
@@ -81,8 +81,8 @@ class BTCEMAStrategy(IStrategy):
     order_types = {
         'entry': 'limit',
         'exit': 'limit',
-        'stoploss': 'market',
-        'stoploss_on_exchange': False
+        'stoploss': 'limit',
+        'stoploss_on_exchange': True
     }
 
     # Optional order time in force.
@@ -163,12 +163,33 @@ class BTCEMAStrategy(IStrategy):
         :param dataframe: DataFrame
         :param metadata: Additional information, like the currently traded pair
         :return: DataFrame with exit columns populated
+
+        Note: We use the custom stop loss method of this strategy to determine when to exit a trade.
         """
+
         return dataframe
 
-    def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime, current_rate: float, current_profit: float, **kwargs) -> float:
+    def custom_stoploss(self, pair: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, **kwargs) -> float:
+        """
+        Custom stoploss logic, returning the new distance relative to current_rate (as ratio).
+        e.g. returning -0.05 would create a stoploss 5% below current_rate.
+        The custom stoploss can never be below self.stoploss, which serves as a hard maximum loss.
+
+        For full documentation please go to https://www.freqtrade.io/en/latest/strategy-advanced/
+
+        When not implemented by a strategy, returns the initial stoploss value
+        Only called when use_custom_stoploss is set to True.
+
+        :param pair: Pair that's currently analyzed
+        :param trade: trade object.
+        :param current_time: datetime object, containing the current datetime
+        :param current_rate: Rate, calculated based on pricing settings in exit_pricing.
+        :param current_profit: Current profit (as ratio), calculated based on current_rate.
+        :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
+        :return float: New stoploss value, relative to the current rate
+        """
         stoploss = self.stoploss
-        
+
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
 
         last_candle = dataframe.iloc[-1].squeeze()
