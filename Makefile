@@ -16,3 +16,9 @@ clear:
 
 restart:
 	@bash ./scripts/restart.sh
+
+ps:
+	@docker-compose ps
+
+clear-data:
+	@bash ./scripts/clear-data.sh
