@@ -58,27 +58,3 @@ services:
     # add the network to the service configuration
     networks:
       - frontend
-
-  btc-ema-strategy-optimized:
-    image: freqtradeorg/freqtrade:stable
-    restart: unless-stopped
-    container_name: btc-ema-strategy-optimized
-    volumes:
-      - "./user_data:/freqtrade/user_data"
-      - "/etc/timezone:/etc/timezone"
-      - "/etc/localtime:/etc/localtime"
-    expose:
-      - 8080
-    # Default command used when running `docker compose up`
-    command: >
-      trade --logfile /freqtrade/user_data/logs/btc-ema-strategy-optimized.log --db-url sqlite:////freqtrade/user_data/databases/btc-ema-strategy-optimized.sqlite --config /freqtrade/user_data/config/btc-ema-strategy-optimized.json --strategy BTCEMAStrategyOptimized
-    # add the labels to the service configuration
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=reverse-proxy"
-      # http
-      - "traefik.http.routers.btc-ema-strategy-optimized.rule=Host(`btc-ema-strategy-optimized.${DOMAIN}`)"
-      - "traefik.http.routers.btc-ema-strategy-optimized.entrypoints=${ENTRYPOINT}"
-    # add the network to the service configuration
-    networks:
-      - frontend
